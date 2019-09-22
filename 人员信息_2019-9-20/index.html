@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script src="https://cdn.staticfile.org/vue/2.2.2/vue.min.js"></script>
+		<script src="https://lib.sinaapp.com/js/jquery/2.0.2/jquery-2.0.2.min.js"></script>
+		<style type="text/css">
+			body {
+				margin: 0;
+				padding: 0;
+				background: lightslategray;
+			}
+
+			.nav {
+				width: 800px;
+				height: 48px;
+				margin: 0 auto;
+				background: black;
+				position: relative;
+			}
+
+			.nav>input:nth-of-type(1) {
+
+				width: 120px;
+				height: 20px;
+				padding: 2px;
+				border-radius: 20px;
+				position: absolute;
+				top: 10px;
+				right: 130px;
+			}
+
+			.nav input:focus {
+				outline: none;
+			}
+
+			.nav>input:nth-of-type(2) {
+				width: 60px;
+				height: 28px;
+				border: 0;
+				background: orange;
+				text-align: center;
+				margin: 0;
+				padding: 0;
+				padding: 2px;
+				position: absolute;
+				top: 10px;
+				right: 60px;
+			}
+
+			.information {
+				width: 800px;
+				height: 1200px;
+				overflow: hidden;
+				background-color: lightgray;
+				margin: 0 auto;
+				position: relative;
+			}
+
+			.information>div:nth-of-type(2) {
+				width: 500px;
+				height: 400px;
+				position: absolute;
+				top: 100px;
+				left: 50px;
+			}
+
+			.information>div:nth-of-type(3) {
+				width: 200px;
+				height: 200px;
+				position: absolute;
+				background: white;
+				top: 100px;
+				right: 50px;
+			}
+
+			.information>input {
+				width: 80px;
+				height: 40px;
+				background: orange;
+				border: 0;
+				position: absolute;
+				top: 540px;
+				left: 200px;
+			}
+
+			.information>input:nth-of-type(2) {
+				left: 300px;
+			}
+
+			.information>input:nth-of-type(3) {
+				left: 400px;
+			}
+
+			.describe {
+				width: 426px;
+				height: 200px;
+			}
+
+			.table01 {
+				position: absolute;
+				top: 600px;
+				width: 101%;
+				min-height: 350px;
+				max-height: 440px;
+				border-top: 6px solid black;
+				overflow-y: scroll;
+
+				background: darkgrey;
+			}
+
+			.table-inner {
+				width: 100%;
+				border-bottom: 2px solid dimgray;
+				text-align: center;
+			}
+
+			.table-inner tr {
+				width: 100%;
+			}
+
+			.user_tr:hover {
+				background: white;
+			}
+			.nameLike{
+				position: absolute;
+				z-index: 999999999;
+				top: 40px;
+				right: 128px;
+				width: 130px;
+				background: lightgray;
+			}
+			.nameLike>p:hover{
+				background: white;
+			}
+		</style>
+	</head>
+	<body>
+
+		<!-- 信息表 -->
+		<form id="form1" class="information" class="" action="">
+			<!-- 导航 -->
+			<div id="nav1" class="nav">
+				<input id="soname" type="text" v-model="namePeace" placeholder="输入姓名">
+				<input type="button" style="border-radius: 20px;" @click="getPersonByName()" value="搜索">
+				<div class="nameLike">
+					<p v-for="(item , index) in nameLikes" @click="soUser(item, index, $event )">
+						{{item.userName}}
+						
+					</p>
+				</div>
+			</div>
+
+			<div>
+				姓名: <input id="name" type="text" v-model="formData.userName" placeholder="请输入姓名" />
+				年龄: <input id="age" type="text" v-model="formData.userAge" placeholder="请输入年龄" />
+				<br><br>
+				电话: <input id="num" type="text" v-model="formData.userNumber" placeholder="请输入电话号" />
+				地址: <input id="addr" type="text" v-model="formData.userAdd" placeholder="请输入地址" />
+				<br><br>
+				描述: <br>
+				<textarea id="disc" class="describe" v-model="formData.discribe" placeholder="请输入描述内容"></textarea>
+
+				<br><br>
+				技术 ( 可多选 ) :
+				<div>
+					<label for="sql">Sql</label>
+					<input type="checkbox" id="sql" value="Sql" v-model="formData.checkedNames">
+					<label for="js">Js</label>
+					<input type="checkbox" id="js" value="Js" v-model="formData.checkedNames">
+					<label for="vue">Vue</label>
+					<input type="checkbox" id="vue" value="Vue" v-model="formData.checkedNames">
+				</div>
+
+				<span style="color: orangered;"> 选择了: {{ formData.checkedNames }}</span>
+			</div>
+			<!-- 照片 -->
+			<div>
+				<div id="ii" style="width: 200px;height: 200px;">
+					<img width="200px" height="200px" v-if="formData.img" v-bind:src=" '/temp/'+ formData.img">
+				</div>
+				<p>
+					<input type="file" id="file111" />
+				</p>
+			</div>
+			<input type="button" value="添加" @click="updataForm()" />
+			<input type="button" value="修改" @click="updataForm2()" />
+			<input type="button" value="显示" @click="getAllUser()" />
+
+			<div id="table01" class="table01">
+				<div>
+					<table class="table-inner">
+						<tr>
+							<th>序号</th>
+							<th>姓名</th>
+							<th>年龄</th>
+							<th>电话</th>
+							<th>地址</th>
+							<th>描述</th>
+							<th>技术型</th>
+						</tr>
+						<tr class="user_tr" v-for="(item, index ) in  allUser" @click="selectUser(item, index, $event )">
+							<td>{{ index + 1}}</td>
+							<td>{{ item.userName}}</td>
+							<td>{{item.userAge}}</td>
+							<td>{{item.userNumber}}</td>
+							<td>{{item.userAdd}}</td>
+							<td>{{item.discribe}}</td>
+							<td>{{item.checkedNames}}</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</form>
+	</body>
+</html>
+<script type="text/javascript">
+	var v1 = new Vue({
+
+		el: '#form1',
+		data: {
+			soname: '',
+			formData: {
+				userName: '',
+				userAge: '',
+				userNumber: '',
+				userAdd: '',
+				discribe: '',
+				checkedNames: [],
+				img: ''
+			},
+			allUser: [],
+			namePeace: "",
+			namePeaceLocked: false, // 锁定标记, 不允许太频繁的向后台发送ajax
+			nameLikes: [],
+
+		},
+
+		watch: {
+			namePeace: function(){
+				// 监听了namePeace的变化!!!!!
+				console.info(this.namePeace);
+				// 锁定标记, 不允许太频繁的向后台发送ajax
+				if(!this.namePeace){
+					console.info("无关键字");
+					this.nameLikes = [];
+					return; 
+				}
+				if( this.namePeaceLocked ){
+					console.info("请求被锁定");
+					return; 
+				}
+				this.namePeaceLocked = true;
+				$.ajax({
+					url: "/searchperson",
+					type: 'get',
+					dataType: 'json',
+					data: {
+						pName: this.namePeace
+					},
+					success: function(res){
+						console.info(res);
+						v1.nameLikes = res.data.likePersons;
+					},
+					complete: function(){
+						console.info("请求完成,解锁");
+						v1.namePeaceLocked = false;
+					}
+				});
+				
+			}
+		},
+
+		methods: {
+			// 增加
+			updataForm: function() {
+				var data2update = new window.FormData();
+
+				for (var x in this.formData) {
+					data2update.append(x, this.formData[x])
+				}
+
+				if( !$("#file111").val() ){
+					alert("无照片, 不允许修改");
+					return;
+				}
+
+				data2update.append("faceImage", $('#file111')[0].files[0]);
+
+				$.ajax({
+					type: 'post',
+					url: "/newPerson",
+					dataType: 'json',
+					processData: false, // 使数据不做处理  // 必填!!!!
+					contentType: false, // 不要设置Content-Type请求头 // 必填!!!!
+					data: data2update,
+					success: function(res) {
+						console.info(res);
+						alert("添加成功");
+					},
+					error: function(a, b) {
+						console.info(a);
+					}
+				});
+
+			},
+
+			// 修改
+			updataForm2: function() {
+				// if(!_username){
+				// 	alert(没查到内容!!);
+				// }
+				var data2update = new window.FormData();
+
+				for (var x in this.formData) {
+					data2update.append(x, this.formData[x])
+				}
+				// 没有取到
+				console.info(data2update.get('img'));
+
+
+				$.ajax({
+					type: 'post',
+					url: "/upPerson",
+					dataType: 'json',
+					processData: false, // 使数据不做处理  // 必填!!!!
+					contentType: false, // 不要设置Content-Type请求头 // 必填!!!!
+					data: data2update,
+					success: function(res) {
+						console.info(res);
+						alert("修改成功");
+					},
+					error: function(a, b) {
+						console.info(a);
+					}
+				});
+
+			},
+
+			// 获取
+			getPersonByName: function() {
+				$.ajax({
+					type: 'post',
+					url: "/getPersonByName",
+					dataType: 'json',
+					data: {
+						username: v1.namePeace
+					},
+					success: function(res) {
+						console.info(res);
+						alert("成功");
+						v1.formData.userName = res.userName;
+						v1.formData.userAge = res.userAge;
+						v1.formData.userNumber = res.userNumber;
+						v1.formData.userAdd = res.userAdd;
+						v1.formData.discribe = res.discribe;
+						v1.formData.checkedNames = res.checkedNames.split(",");
+						v1.formData.img = res.img;
+					},
+					error: function(a, b) {
+						console.info(a);
+					}
+				});
+			},
+
+			getAllUser: function() {
+				$.ajax({
+					url: "/searchUser",
+					type: 'get',
+					dataType: 'json',
+					success: function(res) {
+						console.info(res);
+						v1.allUser = res;
+					},
+				});
+			},
+
+			// 点击列表取个人信息
+			selectUser: function(item, index, event) {
+				console.info(this.allUser[index].checkedNames);
+				this.allUser[index].checkedNames = this.allUser[index].checkedNames.split(",");
+				this.formData = this.allUser[index];
+				
+			},
+			
+			// 点击搜索列表取个人信息
+			soUser: function(item, index, event) {
+				// this.formData = this.nameLikes[index];
+				var a = this.nameLikes[index].userName;
+				// console.info(a);
+				$.ajax({
+					type: 'post',
+					url: "/getPersonByName",
+					dataType: 'json',
+					data: {
+						username: a
+					},
+					success: function(res) {
+						console.info(res);
+						alert("成功");
+						v1.formData.userName = res.userName;
+						v1.formData.userAge = res.userAge;
+						v1.formData.userNumber = res.userNumber;
+						v1.formData.userAdd = res.userAdd;
+						v1.formData.discribe = res.discribe;
+						v1.formData.checkedNames = res.checkedNames.split(",");
+						v1.formData.img = res.img;
+					},
+					error: function(a, b) {
+						console.info(a);
+					}
+				});
+			},
+
+
+		}
+	});
+</script>

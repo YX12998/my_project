@@ -1,0 +1,2 @@
+库: xin
+create table user(userId int auto_increment, userName varchar(20), userAge varchar(20), userNumber varchar(20), userAdd varchar(200), discribe mediumtext, checkedNames varchar(200),img varchar(200), key(userId))ENGINE=InnoDB DEFAULT CHARSET=utf8;
