@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>首页</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" type="text/css" href="/Web/bootstrap/css/bootstrap.css">
+		<script type="text/javascript" src="/Web/js/jquery-2.js"></script>
+		<link rel="stylesheet" type="text/css" href="css/index.css">
+		<style type="text/css">
+			body {
+				background: url(imgs/6.png)repeat;
+				background-size: 100%;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container" style="width: 100%;">
+			<div class="navbar row">
+				<div class="col-lg-2 col-sm-3 col-xs-2 home ">
+					<li><a href="index.html">首页</a></li>
+				</div>
+				<div class="col-lg-3 col-sm-3 col-xs-3 personHome ">
+					<li><a href="/Web/personal_pages.html">个人主页</a></li>
+				</div>
+				<div class="col-lg-2 col-sm-3 col-xs-3 writeArticle ">
+					<li><a href="/Web/add.html">写日志</a></li>
+				</div>
+				<div class="col-lg-4 col-sm-2 col-xs-4 info">
+					<span style="color: white;font-family: '楷体';font-size: 12px;">
+						欢迎:
+						<b id="text"></b>
+					</span>
+					&nbsp;
+					<button type="button" id="logoutBt" class="btn btn-danger" style="border-radius: 50px;font-family: '楷体';opacity: 0.9;">登出</button>
+					<button type="button" id="VipBt" class="btn btn-danger" style="border-radius: 50px;font-family: '楷体';opacity: 0.9;">注册ViP</button>
+
+				</div>
+			</div>
+		</div>
+
+		<div class="container">
+			<h1 style="color: #2C3E50; font-family: '楷体';">热门文章</h1>
+			<hr>
+			<br>
+			<div class="row">
+				<div class="col-sm-3 col-sm-offset-6">
+					<p style="text-align:center; font-family: '楷体'; font-size: 18px;">vip点击可查看所有日志(含私密)</p>
+				</div>
+				<div class="col-sm-3">
+					<button class="btn btn-info" type="button" id="vip">VIP通道</button>
+				</div>
+			</div>
+			<br>
+			<br>
+			<div class="hotArticle">
+				<table class="table table-striped" style="font-family: '楷体'; font-size: 20px;">
+					<thead>
+						<tr>
+							<th>序号</th>
+							<th>标题</th>
+							<th>作者</th>
+							<th>点赞数</th>
+							<th>状态</th>
+							<th>查看</th>
+						</tr>
+					</thead>
+					<tbody id="list">
+						<!-- <tr>
+							<th scope="row">1</th>
+							<td>title</td>
+							<td>hot</td>
+							<td>examine</td>
+						</tr> -->
+						<!-- 	<tr>
+							<th scope="row">' + result[i].articleId + '</th>
+							<td>' + result[i].title + '</td>
+							<td>' + result[i].author +'</td>
+							<td>' + result[i].good + '</td>
+							<td>' + result[i].private1 '</td>
+							<td>' + '<button class="btn btn-success examine">' + '查看' + '</button>' + '</td>
+						</tr>' -->
+					</tbody>
+				</table>
+			</div>
+			<!-- <table id="jo" style="width: 400px; height: 100%; border: 5px solid #2AABD2;">
+				
+			</table> -->
+		</div>
+
+		<!-- 模态框 -->
+		<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header" style="color: white; font-family: '楷体';background-color: #2C3E50;">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title" id="myModalLabel">错误提示</h4>
+					</div>
+					<div class="modal-body" style="color: #2C3E50;font-family: '楷体';">
+						未成功退出
+					</div>
+					<div class="modal-footer">
+						<button type="button" id="close" class="btn btn-danger" data-dismiss="modal" style="border-radius: 50px;font-family: '楷体';opacity: 0.9;"
+						 data-toggle="" data-target="">关闭</button>
+					</div>
+				</div>
+			</div>
+
+		</div>
+		<!-- <div>vip点击可查看所有日志(含私密)<button type="button" id="vip">VIP通道</button></div> -->
+
+	</body>
+</html>
+<script src="bootstrap/js/bootstrap.js"></script>
+<script type="text/javascript">
+	$(function() {
+		$.ajax({
+			async: false,
+			cache: false,
+			url: '/checkelogin',
+			type: 'get',
+			data: {},
+			dataType: 'json',
+			success: function(res) {
+				if (res.ok) {
+					console.info("ok")
+					console.info(res);
+				} else {
+					console.info('no ok');
+					var toHome = window.confirm("您未登录,点击确认登录或点击注销,返回主页");
+
+					if (toHome) {
+						window.location = "/Web/login.html";
+					} else {
+						window.location = "http://hao123.com";
+					}
+
+				}
+			},
+			error: function(a, b) { // a 报错的类型 b 报错的信息 
+				console.info(a);
+			}
+		});
+
+		//  增加数据库内容到页面上
+		$.ajax({
+			url: "/journal",
+			type: 'get',
+			dataType: 'json',
+			success: function(res) {
+				$("#list").append(res); // 把后台数据返回页面
+			},
+			error: function(a, b) {
+				alert("error");
+			}
+		});
+		// 获取用户名
+		$.ajax({
+			url: "/username",
+			type: 'get',
+			dataType: 'json',
+			success: function(res) {
+				$("#text").text(res);
+			},
+			error: function(a, b) {
+				alert("error");
+			}
+		});
+	});
+
+
+	// 判断vip 
+	$("#vip").click(function() {
+		$.ajax({
+			url: "/pdVip",
+			type: 'get',
+			dataType: 'json',
+			success: function(res) {
+				if (res.ok) {
+					window.location = "/Web/vip.html";	
+				} else {
+					alert("你未注册vip");
+					window.location = "/Web/buyVip.html";
+				} 
+
+			},
+			error: function(a, b) {
+				alert(404);
+			}
+		});
+
+	})
+	// 退出
+	$(function() {
+		$("#logoutBt").click(function() {
+			$.ajax({
+				url: "/logout",
+				type: 'post',
+				dataType: 'json',
+				success: function(res) {
+					window.location = '/';
+				},
+				error: function(a, b) {
+					$("#close").attr("data-toggle", "modal");
+					$("#close").attr("data-target", "#myModal");
+					$("#close").click();
+					$("#close").removeAttr("data-toggle");
+					$("#close").removeAttr("data-target");
+				}
+			})
+		});
+	});
+
+	//点击注册跳转到注册页面
+	$("#VipBt").click(function() {
+		
+		window.location = "/Web/buyVip.html";
+	})
+
+	// 点击查看跳转
+	$("tbody").delegate(".examine", "click", function() {
+		window.location = "see.html";
+	});
+	$("#list").delegate("button", "click", function() {
+		alert("传递id成功");
+		(this.parentElement.parentElement).remove();
+		console.info((this.parentElement.parentElement));
+		var id = (this.parentElement.parentElement).children[0].innerText;
+		$.ajax({
+			url: "/seeing",
+			type: 'post',
+			data: {
+				id: id
+			},
+			dataType: 'json',
+			success: function(res) {
+				// window.location = "/Web/see.html";
+				// $("#ati").append(res); // 把后台数据返回页面
+			},
+			error: function(a, b) {
+				alert("error");
+			}
+		});
+	});
+</script>

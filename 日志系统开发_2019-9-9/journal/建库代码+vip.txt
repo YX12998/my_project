@@ -1,0 +1,32 @@
+数据库:
+drop database boke;
+
+create database boke;
+use boke;
+create table user(userId int auto_increment, userName varchar(20), userPassword varchar(20), key(userId))ENGINE=InnoDB DEFAULT CHARSET=utf8;
+insert into user(userName) values('user1');
+update user set userPassword='123' where userId=1;
+
+create table journal(articleId int auto_increment,author varchar(20), title varchar(400), classify varchar(40), article mediumtext, good varchar(999), private1 varchar(200), key(articleId))ENGINE=InnoDB DEFAULT CHARSET=utf8;
+insert into journal(author,title,classify,article,good,private1) values('user1','rizhi1','生活哲理','阿斯顿发送到发范德萨发生','101','false');
+
+create table comment(Id int auto_increment,userName varchar(20), title varchar(20), userId varchar(20), journalId varchar(20) , comments mediumtext, times varchar(20) , key(Id))ENGINE=InnoDB DEFAULT CHARSET=utf8;
+insert into comment(userName,title,userId,journalId,comments,times) values('user1','rizhi1','1','1','这里是评论的内容','19:24分');
+
+create table vip(userId int auto_increment, userName varchar(20),key(userId))ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+D:\wamp\bin\mysql\mysql5.1.53\bin>mysqldump --opt -hlocalhost -uroot -p --skip-lock-tables 要导出的文件名> 要导出的文件名.sql  
+
+数据库储存的方法
+查询数据库啥
+
+show variables like '%char%';
+set character_set_results='gbk';
+set character_set_client='gbk';
+set character_set_connection='gbk';
+set character_set_database='gbk';
+set character_set_server='gbk';
+
+
+update journal set good="results[i].good" where articleId= "articleId";
+update journal set good="2" where articleId= "1";

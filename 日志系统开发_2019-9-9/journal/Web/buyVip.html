@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>购买vip</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="stylesheet" type="text/css" href="/Web/bootstrap/css/bootstrap.css">
+		<script type="text/javascript" src="/Web/js/jquery-2.js"></script>
+		<link rel="stylesheet" type="text/css" href="css/index.css">
+		<style type="text/css">
+			body {
+				background: url(imgs/5.png)no-repeat;
+				background-size: 100%;
+			}
+
+			.jumbotron {
+				margin-top: 10%;
+
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container" style="width: 100%;">
+			<div class="navbar row">
+				<div class="col-lg-2 col-sm-3 col-xs-2 home ">
+					<li><a href="index.html">首页</a></li>
+				</div>
+				<div class="col-lg-3 col-sm-3 col-xs-3 personHome ">
+					<li><a href="/Web/personal_pages.html">个人主页</a></li>
+				</div>
+				<div class="col-lg-2 col-sm-3 col-xs-3 writeArticle ">
+					<li><a href="/Web/add.html">写日志</a></li>
+				</div>
+				<div class="col-lg-4 col-sm-2 col-xs-4 info">
+					<span style="color: white;font-family: '楷体';font-size: 12px;">
+						欢迎:
+						<b id="text"></b>
+					</span>
+					&nbsp;
+					<button type="button" id="logoutBt" class="btn btn-danger" style="border-radius: 50px;font-family: '楷体';opacity: 0.9;">登出</button>
+				    
+				</div>
+			</div>
+		</div>
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="jumbotron">
+						<div class="page-header">
+							<h1>欢迎来到<small>vip专场</small></h1>
+						</div>
+						<p>如果你想在日志里面胡作非为.....请点击下面按钮,购买vip</p>
+						<button type="button" id="reVip" class="btn btn-success btn-lg">购买</button>
+
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- <button id="reVip" type="button">购买</button> -->
+	</body>
+</html>
+<script src="bootstrap/js/bootstrap.js"></script>
+<script type="text/javascript">
+	$("#reVip").click(function() {
+		// 这里可以进行一个判断,如果密码或者用户一个错误则返回重新登录
+		//注册ViP
+		$.ajax({
+			url: "/reVip",
+			type: 'post',
+			data: {
+				userName: $("#text").html(),
+			},
+			dataType: 'json',
+			success: function(res) {
+				if (res.w) {
+					alert("已经注册过了");
+				} else if (res.ok) {
+					alert("注册成功");
+					window.location = "/Web/index.html";
+				}
+
+			},
+			error: function(a, b) {
+
+			}
+		})
+		
+	});
+	// 获取用户名
+	$.ajax({
+		url: "/username",
+		type: 'get',
+		dataType: 'json',
+		success: function(res) {
+			$("#text").text(res);
+		},
+		error: function(a, b) {
+			alert("error");
+		}
+	});
+</script>

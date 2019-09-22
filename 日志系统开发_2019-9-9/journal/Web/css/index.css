@@ -1,0 +1,41 @@
+.navbar {
+		height: 80px;
+		background-color: cadetblue;
+		line-height: 80px;
+	}
+
+	.home {
+		text-align: right;
+	}
+
+	.personHome {
+		text-align: center;
+	}
+
+	.writeArticle {
+		text-align: left;
+	}
+
+	.info {
+		text-align: center;
+	}
+
+	li {
+		list-style: none;
+		font-size: 23px;
+	}
+
+	li :hover {
+		color: white;
+		text-decoration: none;
+	}
+
+	li :focus {
+		color: white;
+		text-decoration: none;
+	}
+
+	li a {
+		color: white;
+		font-family: '楷体';
+	}

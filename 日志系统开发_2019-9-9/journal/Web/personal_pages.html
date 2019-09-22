@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>个人页面</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.css" />
+		<link rel="stylesheet" type="text/css" href="css/index.css">
+			<style type="text/css">
+			body {
+				background: url(imgs/6.png)repeat;
+				background-size: 100%;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container" style="width: 100%;">
+			<div class="navbar row">
+				<div class="col-lg-2 col-sm-3 col-xs-2 home ">
+					<li><a href="index.html">首页</a></li>
+				</div>
+				<div class="col-lg-3 col-sm-3 col-xs-3 personHome ">
+					<li><a href="/Web/personal_pages.html">个人主页</a></li>
+				</div>
+				<div class="col-lg-2 col-sm-3 col-xs-3 writeArticle ">
+					<li><a href="/Web/add.html">写日志</a></li>
+				</div>
+				<div class="col-lg-4 col-sm-2 col-xs-4 info">
+					<span style="color: white;font-family: '楷体';font-size: 12px;">
+						欢迎:
+						<b id="text"></b>
+					</span>
+					<button type="button" id="logoutBt" class="btn btn-danger" style="border-radius: 50px;font-family: '楷体';opacity: 0.9;">登出</button>
+				</div>
+			</div>
+		</div>
+		
+
+		<!-- 内容框 -->
+		<div>
+			<div class="container nav">
+				<h1 style="color: #2C3E50; font-family: '楷体';">我的主页</h1>
+				<hr >
+				<div class="row">
+					<div class="col-md-12">
+
+						<table class="table table-hover table-striped" style="font-family: '楷体'; font-size: 20px;">
+							<thead>
+								<tr>
+									<th>编号</th>
+									<th>用户</th>
+									<th>权限</th>
+									<th>标题</th>
+									<th>操作</th>
+								</tr>
+							</thead>
+							<tbody id="list">
+								<!-- <tr>
+									<th scope="row">1</th>
+									<td>内容表框</td>
+									<td>公开</td>
+									<td>6</td>
+									<td>
+										<button class="btn btn-success examine">查看</button>
+										<button class="btn btn-info updata">编辑</button>
+										<button class="btn btn-danger delete">删除</button>
+									</td>
+								</tr> -->
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- 模态框 -->
+		<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header" style="color: white; font-family: '楷体';background-color: #2C3E50;">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title" id="myModalLabel">错误提示</h4>
+					</div>
+					<div class="modal-body" style="color: #2C3E50;font-family: '楷体';">
+						未成功退出
+					</div>
+					<div class="modal-footer">
+						<button type="button" id="close" class="btn btn-danger" data-dismiss="modal" style="border-radius: 50px;font-family: '楷体';opacity: 0.9;"
+						 data-toggle="" data-target="">关闭</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
+<script src="js/jquery-2.js"></script>
+<script src="bootstrap/js/bootstrap.js"></script>
+
+<script type="text/javascript">
+	// 退出
+	$(function() {
+		$("#logoutBt").click(function() {
+			$.ajax({
+				url: "/logout",
+				type: 'post',
+				dataType: 'json',
+				success: function(res) {
+					window.location = '/';
+				},
+				error: function(a, b) {
+					$("#close").attr("data-toggle", "modal");
+					$("#close").attr("data-target", "#myModal");
+					$("#close").click();
+					$("#close").removeAttr("data-toggle");
+					$("#close").removeAttr("data-target");
+				}
+			})
+		});
+	});
+
+	// 点击按钮时,相关事件发生
+	// // 点击 查看 按钮跳转到文章详情页面
+	$("tbody").delegate(".examine", "click", function() {
+		window.location = "see.html";
+	});
+	// 点击 编辑 按钮跳转到文章编辑页面
+	$("tbody").delegate(".updata", "click", function() {
+		window.location = "updataArticle.html";
+	});
+
+	// 点击 删除 按钮,删除相应的文章列表
+	$("tbody").delegate(".delete", "click", function() {
+		(this.parentElement.parentElement).remove();
+		var number = (this.parentElement.parentElement).children[0].innerText;
+		$.ajax({
+			url: "/deleteArticle",
+			type: 'post',
+			data: {
+				"articleId": number,
+			},
+			dataType: 'json',
+			success: function(res) {
+				alert("删除成功");
+			},
+			error: function(a, b) {
+				alert("error");
+			}
+		});
+	});
+
+    // 返回未来元素样式
+	$.ajax({
+		url: "/journal2",
+		type: 'get',
+		dataType: 'json',
+		success: function(res) {
+			$("#list").append(res); // 把后台数据返回页面
+		},
+		error: function(a, b) {
+			alert("error");
+		}
+	});
+
+	// 获取用户名
+	$.ajax({
+		url: "/username",
+		type: 'get',
+		dataType: 'json',
+		success: function(res) {
+			$("#text").text(res);
+		},
+		error: function(a, b) {
+			alert("error");
+		}
+	});
+
+	// 点击查看文章详情把文章id传到后台
+	$("#list").delegate("button", "click", function() {
+		alert("传递id成功");
+		(this.parentElement.parentElement).remove();
+		var id = (this.parentElement.parentElement).children[0].innerText;
+		$.ajax({
+			url: "/seeing",
+			type: 'post',
+			data: {
+				id: id
+			},
+			dataType: 'json',
+			success: function(res) {
+				// window.location = "/Web/see.html";
+				// $("#ati").append(res); // 把后台数据返回页面
+			},
+			error: function(a, b) {
+				alert("error");
+			}
+		});
+	});
+
+</script>
